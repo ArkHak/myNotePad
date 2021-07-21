@@ -10,7 +10,7 @@
 
     <fragment
         android:layout_margin="8dp"
-        android:name="com.example.mynotepad.NotesTitlesFragment"
+        android:name="com.example.mynotepad.TitlesFragment"
         android:id="@+id/titles"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

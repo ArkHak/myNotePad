@@ -1,5 +1,6 @@
 package com.example.mynotepad;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,12 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-public class NotesTitlesFragment extends Fragment {
+public class TitlesFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,9 @@ public class NotesTitlesFragment extends Fragment {
     }
 
     private void initList(View view) {
-        Note note1 = new Note("Покупки", "Что-то купить", "01.07.2021");
-        Note note2 = new Note("Учеба", "Сделай домашку!", "21.07.2021");
-        Note note3 = new Note("Идеи", "А что если сделать так:", "13.07.2021");
+        Note note1 = new Note("Покупки", "Что-то купить", "21.07.2021");
+        Note note2 = new Note("Учеба", "Сделай домашку!", "16.07.2021");
+        Note note3 = new Note("Идеи", "А что если сделать так:", "01.07.2021");
         Note[] notes = {note1, note2, note3};
 
         LinearLayout linearLayout = (LinearLayout) view;
@@ -54,8 +55,19 @@ public class NotesTitlesFragment extends Fragment {
             titleText.setCursorVisible(false);
             dateText.addView(titleText);
 
+            titleText.setOnClickListener(v -> {
+                showDescription(note);
+            });
+
             linearLayout.addView(dateText);
         }
+    }
+
+    private void showDescription(Note note) {
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), DescriptionActivity.class);
+        intent.putExtra(DescriptionFragment.ARG_NOTE, note);
+        startActivity(intent);
     }
 
 }
