@@ -1,22 +1,25 @@
 package com.example.mynotepad;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class TitlesFragment extends Fragment {
+
+    private boolean isLandscape = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class TitlesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         initList(view);
     }
@@ -64,6 +69,24 @@ public class TitlesFragment extends Fragment {
     }
 
     private void showDescription(Note note) {
+        if (isLandscape) {
+            showDescriptionLand(note);
+        } else {
+            showDescriptionPort(note);
+        }
+
+    }
+
+    private void showDescriptionLand(Note note) {
+        DescriptionFragment fragment = DescriptionFragment.newInstance(note);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.description, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
+    private void showDescriptionPort(Note note) {
         Intent intent = new Intent();
         intent.setClass(getActivity(), DescriptionActivity.class);
         intent.putExtra(DescriptionFragment.ARG_NOTE, note);
