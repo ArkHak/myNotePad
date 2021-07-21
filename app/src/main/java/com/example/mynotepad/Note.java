@@ -6,7 +6,6 @@ public class Note {
     String dateCreate;
 
     public Note() {
-
     }
 
     public Note(String title, String description, String date) {
