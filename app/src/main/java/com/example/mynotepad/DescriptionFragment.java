@@ -1,5 +1,6 @@
 package com.example.mynotepad;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Calendar;
 
 public class DescriptionFragment extends Fragment {
 
     private Note note;
     public static final String ARG_NOTE = "note";
+    private int mYear, mMonth, mDay;
 
     public DescriptionFragment() {
     }
@@ -57,6 +60,19 @@ public class DescriptionFragment extends Fragment {
         TextView descriptionTextView = view.findViewById(R.id.description_text_view);
 
         dateTextView.setText(note.getDateCreate());
+        dateTextView.setOnClickListener(v -> {
+            final Calendar cal = Calendar.getInstance();
+            mYear = cal.get(Calendar.YEAR);
+            mMonth = cal.get(Calendar.MONTH);
+            mDay = cal.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                    (view1, year, monthOfYear, dayOfMonth) -> {
+                        String editTextDateParam = dayOfMonth + "." + (monthOfYear + 1) + "." + year;
+                        dateTextView.setText(editTextDateParam);
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
         titleTextView.setText(note.getTitle());
         descriptionTextView.setText(note.getDescription());
     }

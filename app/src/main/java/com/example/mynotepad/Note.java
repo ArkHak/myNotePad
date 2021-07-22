@@ -58,4 +58,5 @@ public class Note implements Parcelable {
         dest.writeString(description);
         dest.writeString(dateCreate);
     }
+
 }
