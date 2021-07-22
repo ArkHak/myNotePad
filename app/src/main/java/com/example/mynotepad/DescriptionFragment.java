@@ -15,7 +15,6 @@ import android.widget.TextView;
 public class DescriptionFragment extends Fragment {
 
     private Note note;
-
     public static final String ARG_NOTE = "note";
 
     public DescriptionFragment() {

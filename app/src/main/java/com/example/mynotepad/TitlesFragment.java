@@ -2,6 +2,7 @@ package com.example.mynotepad;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,21 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class TitlesFragment extends Fragment {
 
+    public static final String CURRENT_NOTE = "CurrentNote";
+    private Note currentNote;
     private boolean isLandscape = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(CURRENT_NOTE, currentNote);
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -39,8 +49,14 @@ public class TitlesFragment extends Fragment {
 
         isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
+        if (savedInstanceState != null) {
+            currentNote = savedInstanceState.getParcelable(CURRENT_NOTE);
+            showDescription(currentNote);
+        }
+
         initList(view);
     }
+
 
     private void initList(View view) {
         Note note1 = new Note("Покупки", "Что-то купить", "21.07.2021");
@@ -61,7 +77,8 @@ public class TitlesFragment extends Fragment {
             dateText.addView(titleText);
 
             titleText.setOnClickListener(v -> {
-                showDescription(note);
+                currentNote = note;
+                showDescription(currentNote);
             });
 
             linearLayout.addView(dateText);
