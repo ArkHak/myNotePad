@@ -52,6 +52,8 @@ public class TitlesFragment extends Fragment {
         if (savedInstanceState != null) {
             currentNote = savedInstanceState.getParcelable(CURRENT_NOTE);
             showDescription(currentNote);
+        } else {
+            currentNote = new Note();
         }
 
         initList(view);
