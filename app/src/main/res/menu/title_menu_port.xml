@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/create_note"
+        android:icon="@drawable/ic_create_note"
+        app:showAsAction="always"
+        android:title="@string/menu_add" />
+
+    <item
+        android:id="@+id/activity_settings"
+        android:icon="@drawable/ic_settings"
+        app:showAsAction="ifRoom"
+        android:title="@string/settings" />
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/ic_abouts"
+        app:showAsAction="never"
+        android:title="@string/abouts" />
+
+</menu>

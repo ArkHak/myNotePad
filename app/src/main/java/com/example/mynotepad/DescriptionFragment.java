@@ -1,6 +1,7 @@
 package com.example.mynotepad;
 
 import android.app.DatePickerDialog;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,10 @@ public class DescriptionFragment extends Fragment {
     private int mYear, mMonth, mDay;
 
     public DescriptionFragment() {
+    }
+
+    interface Controller {
+        void changeTitleToolbar(String titleToolbar);
     }
 
     public static DescriptionFragment newInstance(Note note) {
@@ -75,5 +80,13 @@ public class DescriptionFragment extends Fragment {
         });
         titleTextView.setText(note.getTitle());
         descriptionTextView.setText(note.getDescription());
+
+
+        boolean isLandscape = getResources().getConfiguration().
+                orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        if (!isLandscape){
+            ((Controller) getActivity()).changeTitleToolbar(note.getTitle());
+        }
     }
 }
