@@ -11,4 +11,5 @@
     <color name="background_note_list">#64d67d</color>
     <color name="back_edit_note_fragment">#90d19e</color>
     <color name="background_btn_save">#fcb07e</color>
+    <color name="background_date_card_item">#e5e863</color>
 </resources>

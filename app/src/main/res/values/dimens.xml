@@ -8,4 +8,11 @@
     <dimen name="def_padding_edit_note">16dp</dimen>
     <dimen name="size_text_subject">24sp</dimen>
     <dimen name="size_text_description">16sp</dimen>
+    <dimen name="margin_note_item">8dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="card_elevation">6dp</dimen>
+    <dimen name="padding_horizont_card_item">8dp</dimen>
+    <dimen name="text_size_date_card_item">22sp</dimen>
+    <dimen name="margin_vert_subject_card_item">14dp</dimen>
+    <dimen name="text_size_subject_card_item">32sp</dimen>
 </resources>
