@@ -17,12 +17,9 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
 
-    <fragment
-        android:id="@+id/titles"
-        android:name="com.example.mynotepad.TitlesFragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp" />
-
+        android:layout_height="match_parent" />
 
 </LinearLayout>

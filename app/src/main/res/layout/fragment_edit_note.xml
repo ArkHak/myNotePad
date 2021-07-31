@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_edit_note_fragment"
+    android:orientation="vertical">
+
+
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_note_btn"
+        android:padding="16dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:text="@string/save_btn"/>
+
+</LinearLayout>

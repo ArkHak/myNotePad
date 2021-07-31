@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="add_floating_button">#fc924b</color>
+    <color name="background_note_list">#77ff95</color>
+    <color name="back_edit_note_fragment">#aefcbf</color>
 </resources>
