@@ -3,27 +3,32 @@ package com.example.mynotepad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 public class Note implements Parcelable {
     public final String id;
-    public final String title;
+    public final String subject;
     public final Date date;
     public final String description;
 
     public Note(String id, String title, Date date, String description) {
         this.id = id;
-        this.title = title;
+        this.subject = title;
         this.date = date;
         this.description = description;
     }
 
     protected Note(Parcel in) {
         id = in.readString();
-        title = in.readString();
+        subject = in.readString();
         description = in.readString();
-        date = null;
+        date = new Date(in.readLong());
+    }
+
+    public static Date getCurrentDate() {
+       return Calendar.getInstance().getTime();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -50,7 +55,8 @@ public class Note implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(title);
+        dest.writeString(subject);
         dest.writeString(description);
+        dest.writeLong(date.getTime());
     }
 }

@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 
 
-public class MainActivity extends AppCompatActivity implements NoteListFragment.Contract {
+public class MainActivity extends AppCompatActivity implements NoteListFragment.Contract,
+        EditNoteFragment.Contract {
+    private static final String NOTES_LIST_FRAG_TEG = "NOTES_LIST_FRAG_TEG";
 
 
     @Override
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private void showNoteList() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, new NoteListFragment())
+                .add(R.id.fragment_container, new NoteListFragment(), NOTES_LIST_FRAG_TEG)
                 .commit();
     }
 
@@ -41,5 +43,12 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     @Override
     public void createNewNote() {
         showEditNote();
+    }
+
+    @Override
+    public void saveNote(Note note) {
+        NoteListFragment noteListFragment =
+                (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
+        noteListFragment.addNote(note);
     }
 }

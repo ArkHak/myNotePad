@@ -8,4 +8,6 @@
     <string name="add">Add</string>
     <string name="save_btn">Сохранить</string>
     <string name="err_contract">Activity must implement Contract</string>
+    <string name="hint_subject">Заголовок заметки</string>
+    <string name="hint_description_note">Текст заметки</string>
 </resources>

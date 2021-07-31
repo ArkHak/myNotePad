@@ -10,4 +10,5 @@
     <color name="add_floating_button">#fc924b</color>
     <color name="background_note_list">#77ff95</color>
     <color name="back_edit_note_fragment">#aefcbf</color>
+    <color name="background_btn_save">#fcb07e</color>
 </resources>
