@@ -47,16 +47,31 @@ public class NoteListFragment extends Fragment {
         }
     }
 
-    public void addNote(Note note) {
-        noteList.add(note);
+    public void addNote(Note newNote) {
+        Note sameNote = findNoteWithId(newNote.id);
+        if (sameNote != null) {
+            noteList.remove(sameNote);
+        }
+        noteList.add(newNote);
         renderList(noteList);
     }
 
+    private Note findNoteWithId(String id) {
+        for (Note note : noteList) {
+            if (note.id.equals(id)) {
+                return note;
+            }
+        }
+        return null;
+    }
+
     private void renderList(List<Note> notes) {
+        getActivity().setTitle(R.string.app_name);
         listLayout.removeAllViews();
         for (Note note : notes) {
             Button button = new Button(getContext());
             button.setText(note.subject);
+            button.setOnClickListener(v -> getContract().editNote(note));
             listLayout.addView(button);
         }
     }
@@ -67,5 +82,7 @@ public class NoteListFragment extends Fragment {
 
     interface Contract {
         void createNewNote();
+
+        void editNote(Note note);
     }
 }

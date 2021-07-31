@@ -6,4 +6,6 @@
     <dimen name="padding_btn_save">16dp</dimen>
     <dimen name="margin_brn_save">16dp</dimen>
     <dimen name="def_padding_edit_note">16dp</dimen>
+    <dimen name="size_text_subject">24sp</dimen>
+    <dimen name="size_text_description">16sp</dimen>
 </resources>

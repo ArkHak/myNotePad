@@ -28,7 +28,7 @@ public class Note implements Parcelable {
     }
 
     public static Date getCurrentDate() {
-       return Calendar.getInstance().getTime();
+        return Calendar.getInstance().getTime();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {

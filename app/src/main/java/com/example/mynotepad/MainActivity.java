@@ -1,5 +1,6 @@
 package com.example.mynotepad;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -33,16 +34,25 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private void showEditNote() {
+        showEditNote(null);
+    }
+
+    private void showEditNote(@Nullable Note note) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.fragment_container, new EditNoteFragment())
+                .replace(R.id.fragment_container, EditNoteFragment.newInstance(note))
                 .commit();
     }
 
     @Override
     public void createNewNote() {
         showEditNote();
+    }
+
+    @Override
+    public void editNote(Note note) {
+        showEditNote(note);
     }
 
     @Override

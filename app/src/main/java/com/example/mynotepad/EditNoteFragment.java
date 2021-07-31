@@ -13,9 +13,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class EditNoteFragment extends Fragment {
+    private static final String NOTE_EXTRA_KEY = "NOTE_EXTRA_KEY";
+
     private Button saveButton;
     private EditText subjectEditText;
     private EditText descriptionEditText;
+
+    @Nullable
+    private Note note = null;
+
+    public static Fragment newInstance(@Nullable Note note) {
+        EditNoteFragment fragment = new EditNoteFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(NOTE_EXTRA_KEY, note);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -30,17 +43,27 @@ public class EditNoteFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        note = getArguments().getParcelable(NOTE_EXTRA_KEY);
+        getActivity().setTitle(note == null ? "Новая заметка" : note.subject);
+        fillNote(note);
+
         saveButton.setOnClickListener(v -> {
             getContract().saveNote(gatherNote());
             getParentFragmentManager().popBackStack();
         });
     }
 
+    private void fillNote(Note note) {
+        if (note == null) return;
+        subjectEditText.setText(note.subject);
+        descriptionEditText.setText(note.description);
+    }
+
     private Note gatherNote() {
         return new Note(
-                Note.generateId(),
+                note == null ? Note.generateId() : note.id,
                 subjectEditText.getText().toString(),
-                Note.getCurrentDate(),
+                note == null ? Note.getCurrentDate() : note.date,
                 descriptionEditText.getText().toString()
         );
     }
