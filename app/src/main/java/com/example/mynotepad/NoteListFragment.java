@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -19,7 +20,8 @@ import java.util.List;
 
 public class NoteListFragment extends Fragment {
     private FloatingActionButton createButton;
-    private LinearLayout listLayout;
+    private RecyclerView recyclerView;
+    private NotesAdapter adapter;
 
     private ArrayList<Note> noteList = new ArrayList<>();
 
@@ -27,13 +29,15 @@ public class NoteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         createButton = view.findViewById(R.id.add_note_btn);
-        listLayout = view.findViewById(R.id.list_linear_layout);
+        recyclerView = view.findViewById(R.id.recycler_list);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        adapter = new NotesAdapter();
         renderList(noteList);
+        recyclerView.setAdapter(adapter);
         createButton.setOnClickListener(v -> {
             getContract().createNewNote();
         });
@@ -67,13 +71,14 @@ public class NoteListFragment extends Fragment {
 
     private void renderList(List<Note> notes) {
         getActivity().setTitle(R.string.app_name);
-        listLayout.removeAllViews();
-        for (Note note : notes) {
-            Button button = new Button(getContext());
-            button.setText(note.subject);
-            button.setOnClickListener(v -> getContract().editNote(note));
-            listLayout.addView(button);
-        }
+        adapter.setData(noteList);
+//        listLayout.removeAllViews();
+//        for (Note note : notes) {
+//            Button button = new Button(getContext());
+//            button.setText(note.subject);
+//            button.setOnClickListener(v -> getContract().editNote(note));
+//            listLayout.addView(button);
+//        }
     }
 
     private Contract getContract() {

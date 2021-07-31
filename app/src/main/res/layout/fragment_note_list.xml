@@ -5,8 +5,8 @@
     android:background="@color/background_note_list"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/list_linear_layout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/margin_list_note_layout"
