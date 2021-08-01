@@ -1,7 +1,6 @@
 package com.example.mynotepad;
 
 import android.view.LayoutInflater;
-
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -9,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 
 public class NoteViewHolder extends RecyclerView.ViewHolder {
