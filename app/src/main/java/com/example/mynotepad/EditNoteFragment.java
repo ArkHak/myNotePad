@@ -43,8 +43,8 @@ public class EditNoteFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        assert getArguments() != null;
         note = getArguments().getParcelable(NOTE_EXTRA_KEY);
-        getActivity().setTitle(note == null ? "Новая заметка" : note.subject);
         fillNote(note);
 
         saveButton.setOnClickListener(v -> {

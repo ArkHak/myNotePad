@@ -12,6 +12,15 @@ import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     private List<Note> data = new ArrayList<>();
+    private OnItemClickListener onItemClickListener;
+
+    interface OnItemClickListener {
+        void onItemClick(Note note);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public void setData(List<Note> notes) {
         data = notes;
@@ -21,8 +30,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false);
-        return new NoteViewHolder(view);
+        return new NoteViewHolder(parent, onItemClickListener);
     }
 
     @Override

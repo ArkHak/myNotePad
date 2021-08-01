@@ -37,6 +37,7 @@ public class NoteListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         adapter = new NotesAdapter();
+        adapter.setOnItemClickListener(getContract()::editNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         renderList(noteList);
         recyclerView.setAdapter(adapter);
@@ -72,15 +73,7 @@ public class NoteListFragment extends Fragment {
     }
 
     private void renderList(List<Note> notes) {
-        getActivity().setTitle(R.string.app_name);
         adapter.setData(noteList);
-//        listLayout.removeAllViews();
-//        for (Note note : notes) {
-//            Button button = new Button(getContext());
-//            button.setText(note.subject);
-//            button.setOnClickListener(v -> getContract().editNote(note));
-//            listLayout.addView(button);
-//        }
     }
 
     private Contract getContract() {
@@ -89,7 +82,6 @@ public class NoteListFragment extends Fragment {
 
     interface Contract {
         void createNewNote();
-
         void editNote(Note note);
     }
 }

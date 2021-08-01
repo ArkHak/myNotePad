@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     private void showEditNote(@Nullable Note note) {
+        if (!isLandscapeMode) {
+            setTitle(note == null ? "Новая заметка" : note.subject);
+        }
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         if (!isLandscapeMode) {
@@ -64,8 +68,10 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
 
     @Override
     public void saveNote(Note note) {
+        setTitle(R.string.app_name);
         NoteListFragment noteListFragment =
                 (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
+        assert noteListFragment != null;
         noteListFragment.addNote(note);
     }
 }
