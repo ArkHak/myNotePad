@@ -13,6 +13,7 @@ public class Note implements Parcelable {
     public final Date date;
     public final String description;
 
+
     public Note(String id, String title, Date date, String description) {
         this.id = id;
         this.subject = title;

@@ -1,7 +1,5 @@
 package com.example.mynotepad;
 
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -18,7 +16,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         void onItemClick(Note note);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 

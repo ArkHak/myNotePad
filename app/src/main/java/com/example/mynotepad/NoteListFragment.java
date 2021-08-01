@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +23,7 @@ public class NoteListFragment extends Fragment {
     private NotesAdapter adapter;
 
     private ArrayList<Note> noteList = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,6 +81,7 @@ public class NoteListFragment extends Fragment {
 
     interface Contract {
         void createNewNote();
+
         void editNote(Note note);
     }
 }
