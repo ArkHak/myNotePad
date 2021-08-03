@@ -22,7 +22,7 @@ public class NoteListFragment extends Fragment {
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
 
-    private ArrayList<Note> noteList = new ArrayList<>();
+    private final ArrayList<Note> noteList = new ArrayList<>();
 
 
     @Override
