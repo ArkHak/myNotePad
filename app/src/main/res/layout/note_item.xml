@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_note_item"
+    android:backgroundTint="@color/white"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/card_item_date_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_date_card_item"
+            android:gravity="end"
+            android:paddingHorizontal="@dimen/padding_horizont_card_item"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_date_card_item"
+            tools:text="16.16.2021" />
+
+        <TextView
+            android:id="@+id/card_item_subject_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_vert_subject_card_item"
+            android:paddingHorizontal="@dimen/padding_horizont_card_item"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_subject_card_item"
+            android:textStyle="bold"
+            tools:text="Заголовок заметки" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

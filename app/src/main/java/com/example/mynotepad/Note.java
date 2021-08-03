@@ -3,18 +3,32 @@ package com.example.mynotepad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Note implements Parcelable {
-    String title;
-    String description;
-    String dateCreate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
-    public Note() {
+public class Note implements Parcelable {
+    public final String id;
+    public final String subject;
+    public final Date date;
+    public final String description;
+
+    public Note(String id, String title, Date date, String description) {
+        this.id = id;
+        this.subject = title;
+        this.date = date;
+        this.description = description;
     }
 
     protected Note(Parcel in) {
-        title = in.readString();
+        id = in.readString();
+        subject = in.readString();
         description = in.readString();
-        dateCreate = in.readString();
+        date = new Date(in.readLong());
+    }
+
+    public static Date getCurrentDate() {
+        return Calendar.getInstance().getTime();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -29,22 +43,8 @@ public class Note implements Parcelable {
         }
     };
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDateCreate() {
-        return dateCreate;
-    }
-
-    public Note(String title, String description, String date) {
-        this.title = title;
-        this.description = description;
-        this.dateCreate = date;
+    public static String generateId() {
+        return UUID.randomUUID().toString();
     }
 
     @Override
@@ -54,9 +54,9 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
+        dest.writeString(id);
+        dest.writeString(subject);
         dest.writeString(description);
-        dest.writeString(dateCreate);
+        dest.writeLong(date.getTime());
     }
-
 }
