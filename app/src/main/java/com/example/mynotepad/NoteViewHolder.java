@@ -1,7 +1,9 @@
 package com.example.mynotepad;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,25 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         if (clickListener != null) {
             cardView.setOnClickListener(v -> clickListener.onItemClick(note));
         }
+
+        cardView.setOnLongClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(parent.getContext(), cardView);
+            popupMenu.inflate(R.menu.note_menu);
+            popupMenu.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_update:
+                        clickListener.onItemClick(note);
+                        return true;
+                    case R.id.action_delete:
+                        //todo удаление
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+            popupMenu.show();
+            return true;
+        });
     }
 
     public void bind(Note note) {
