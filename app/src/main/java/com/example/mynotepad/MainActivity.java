@@ -5,7 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.Contract,
@@ -21,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         isLandscapeMode = findViewById(R.id.optional_fragment_container) != null;
         showToolbar();
         showNoteList();
-
     }
 
     private void showToolbar() {
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     public void editNote(Note note) {
         showEditNote(note);
     }
+
 
     @Override
     public void saveNote(Note note) {
