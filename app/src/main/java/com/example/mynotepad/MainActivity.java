@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private void showNoteList() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.main_fragment_container, new NoteListFragment(), NOTES_LIST_FRAG_TEG)
+                .replace(R.id.main_fragment_container, new NoteListFragment(), NOTES_LIST_FRAG_TEG)
                 .commit();
     }
 
@@ -73,5 +73,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
         assert noteListFragment != null;
         noteListFragment.addNote(note);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setTitle(R.string.app_name);
+        super.onBackPressed();
     }
 }

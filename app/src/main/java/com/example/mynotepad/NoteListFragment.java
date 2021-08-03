@@ -30,6 +30,7 @@ public class NoteListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note_list, container, false);
         createButton = view.findViewById(R.id.add_note_btn);
         recyclerView = view.findViewById(R.id.recycler_list);
+        recyclerView.setHasFixedSize(true);
         return view;
     }
 
