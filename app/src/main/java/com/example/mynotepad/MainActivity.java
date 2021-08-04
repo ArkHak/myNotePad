@@ -5,14 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements NoteListFragment.Contract,
@@ -65,6 +58,14 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     @Override
     public void createNewNote() {
         showEditNote();
+    }
+
+    @Override
+    public void deleteNote(Note delNote) {
+        NoteListFragment noteListFragment =
+                (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
+        assert noteListFragment != null;
+        noteListFragment.deleteNote(delNote);
     }
 
     @Override

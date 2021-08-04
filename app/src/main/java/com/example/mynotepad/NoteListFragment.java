@@ -60,6 +60,7 @@ public class NoteListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         adapter = new NotesAdapter();
         adapter.setOnItemClickListener(getContract()::editNote);
+        adapter.SetDeleteItemListener(getContract()::deleteNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         renderList(noteList);
         recyclerView.setAdapter(adapter);
@@ -85,6 +86,14 @@ public class NoteListFragment extends Fragment {
         renderList(noteList);
     }
 
+    public void deleteNote(Note delNote) {
+        Note sameNote = findNoteWithId(delNote.id);
+        if (sameNote != null) {
+            noteList.remove(sameNote);
+        }
+        renderList(noteList);
+    }
+
     private Note findNoteWithId(String id) {
         for (Note note : noteList) {
             if (note.id.equals(id)) {
@@ -104,6 +113,8 @@ public class NoteListFragment extends Fragment {
 
     interface Contract {
         void createNewNote();
+
+        void deleteNote(Note delNote);
 
         void editNote(Note note);
     }

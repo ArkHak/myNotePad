@@ -11,14 +11,24 @@ import java.util.List;
 public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     private List<Note> data = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
+    private OnDeleteItemListener onDeleteItemListener;
 
     interface OnItemClickListener {
         void onItemClick(Note note);
     }
 
+    interface OnDeleteItemListener {
+        void onDeleteItem(Note note);
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
+
+    public void SetDeleteItemListener(OnDeleteItemListener onDeleteItemListener) {
+        this.onDeleteItemListener = onDeleteItemListener;
+    }
+
 
     public void setData(List<Note> notes) {
         data = notes;
@@ -28,7 +38,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NoteViewHolder(parent, onItemClickListener);
+        return new NoteViewHolder(parent, onItemClickListener, onDeleteItemListener);
     }
 
     @Override

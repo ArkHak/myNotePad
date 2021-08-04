@@ -1,7 +1,6 @@
 package com.example.mynotepad;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -12,14 +11,14 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-
 public class NoteViewHolder extends RecyclerView.ViewHolder {
     private final TextView dateTextView;
     private final TextView subjectTextView;
     private Note note;
     private final CardView cardView;
 
-    public NoteViewHolder(@NonNull ViewGroup parent, @Nullable NotesAdapter.OnItemClickListener clickListener) {
+    public NoteViewHolder(@NonNull ViewGroup parent, @Nullable NotesAdapter.OnItemClickListener clickListener,
+                          NotesAdapter.OnDeleteItemListener deleteListener) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item, parent, false));
         cardView = (CardView) itemView;
         dateTextView = itemView.findViewById(R.id.card_item_date_note);
@@ -34,10 +33,14 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
             popupMenu.setOnMenuItemClickListener(item -> {
                 switch (item.getItemId()) {
                     case R.id.action_update:
-                        clickListener.onItemClick(note);
+                        if (clickListener != null) {
+                            clickListener.onItemClick(note);
+                        }
                         return true;
                     case R.id.action_delete:
-                        //todo удаление
+                        if (deleteListener != null) {
+                            deleteListener.onDeleteItem(note);
+                        }
                         return true;
                     default:
                         return false;
