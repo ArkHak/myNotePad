@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -62,6 +63,7 @@ public class NoteListFragment extends Fragment {
         adapter.setOnItemClickListener(getContract()::editNote);
         adapter.SetDeleteItemListener(getContract()::deleteNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         renderList(noteList);
         recyclerView.setAdapter(adapter);
         createButton.setOnClickListener(v -> {
@@ -104,7 +106,7 @@ public class NoteListFragment extends Fragment {
     }
 
     private void renderList(List<Note> notes) {
-        adapter.setData(noteList);
+        adapter.setData(notes);
     }
 
     private Contract getContract() {

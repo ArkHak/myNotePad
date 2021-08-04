@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 public class NoteViewHolder extends RecyclerView.ViewHolder {
     private final TextView dateTextView;
@@ -53,8 +56,8 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Note note) {
         this.note = note;
-        //todo current date/time
-        dateTextView.setText(note.date.toString());
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        dateTextView.setText(df.format(note.date));
         subjectTextView.setText(note.subject);
     }
 }
