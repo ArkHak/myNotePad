@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NoteListFragment extends Fragment {
+    private static final int MY_DEFAULT_DURATION = 1000;
+    private static int position;
+    private final String ACTION_DEL_NOTE = "ACTION_DEL_NOTE";
     private FloatingActionButton createButton;
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
@@ -36,6 +39,13 @@ public class NoteListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_list);
         recyclerView.setHasFixedSize(true);
         setHasOptionsMenu(true);
+
+        DefaultItemAnimator animator = new DefaultItemAnimator();
+        animator.setAddDuration(MY_DEFAULT_DURATION);
+        animator.setRemoveDuration(MY_DEFAULT_DURATION);
+        recyclerView.setItemAnimator(animator);
+
+
         return view;
     }
 
@@ -93,11 +103,13 @@ public class NoteListFragment extends Fragment {
         if (sameNote != null) {
             noteList.remove(sameNote);
         }
-        renderList(noteList);
+        renderList(noteList, ACTION_DEL_NOTE);
     }
 
     private Note findNoteWithId(String id) {
+        position = -1;
         for (Note note : noteList) {
+            position++;
             if (note.id.equals(id)) {
                 return note;
             }
@@ -107,6 +119,16 @@ public class NoteListFragment extends Fragment {
 
     private void renderList(List<Note> notes) {
         adapter.setData(notes);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void renderList(List<Note> notes, String action) {
+        adapter.setData(notes);
+        switch (action){
+            case ACTION_DEL_NOTE:
+                adapter.notifyItemRemoved(position);
+        }
+
     }
 
     private Contract getContract() {
