@@ -1,8 +1,8 @@
 package com.example.mynotepad;
 
-
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,12 +17,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +42,9 @@ public class NoteListFragment extends Fragment {
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
     private CollectionReference noteCollection;
+    private FirebaseFirestore myDB;
+
+    private static final String TAG = "[NoteSourceFirebaseImpl]";
 
     private final ArrayList<Note> noteList = new ArrayList<>();
 
@@ -47,6 +55,10 @@ public class NoteListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_list);
         recyclerView.setHasFixedSize(true);
         setHasOptionsMenu(true);
+        FirebaseApp.initializeApp(requireContext());
+        myDB = FirebaseFirestore.getInstance();
+        noteCollection = myDB.collection("notes");
+        initListBase(noteList);
 
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(MY_DEFAULT_DURATION);
@@ -82,10 +94,6 @@ public class NoteListFragment extends Fragment {
         adapter.SetDeleteItemListener(getContract()::deleteNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        FirebaseApp.initializeApp(requireContext());
-        FirebaseFirestore myDB = FirebaseFirestore.getInstance();
-
-        noteCollection = myDB.collection("notes");
 
 
         renderList(noteList);
@@ -93,25 +101,6 @@ public class NoteListFragment extends Fragment {
         createButton.setOnClickListener(v -> {
             getContract().createNewNote();
         });
-    }
-
-
-    public static Map<String, Object> toDocument(Note note) {
-        Map<String, Object> answer = new HashMap<>();
-        answer.put("ID", note.id);
-        answer.put("SUBJECT", note.subject);
-        answer.put("DESCRIPTION", note.description);
-        answer.put("DATE", note.date);
-        return answer;
-    }
-
-    public void addNoteToBase(final Note note) {
-        noteCollection.add(toDocument(note)).
-                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                    }
-                });
     }
 
 
@@ -138,6 +127,7 @@ public class NoteListFragment extends Fragment {
         if (sameNote != null) {
             noteList.remove(sameNote);
         }
+
         renderList(noteList, ACTION_DEL_NOTE);
     }
 
@@ -166,13 +156,39 @@ public class NoteListFragment extends Fragment {
 
     }
 
-//    NoteListFragment init(NotesSourceResponse notesSourceResponse);
+    public void initListBase(ArrayList<Note> noteList) {
+        noteList.clear();
+        myDB.collection("notes").orderBy(NoteMapping.Fields.DATE,
+                Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> doc = document.getData();
+                            String id = document.getId();
+                            Note note = NoteMapping.toNote(id, doc);
+                            noteList.add(note);
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+    }
+
+    public void addNoteToBase(final Note note) {
+        noteCollection.add(NoteMapping.toDocument(note)).
+                addOnSuccessListener(documentReference ->
+                        Log.d("BD", "Сделана новая запись в БД: " + note.getSubject()));
+    }
 
     private Contract getContract() {
         return (Contract) getActivity();
     }
 
     interface Contract {
+
         void createNewNote();
 
         void deleteNote(Note delNote);
