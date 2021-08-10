@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
         isLandscapeMode = findViewById(R.id.optional_fragment_container) != null;
         showToolbar();
         showNoteList();
-
     }
 
     private void showToolbar() {
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     private void showNoteList() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.main_fragment_container, new NoteListFragment(), NOTES_LIST_FRAG_TEG)
+                .replace(R.id.main_fragment_container, new NoteListFragment(), NOTES_LIST_FRAG_TEG)
                 .commit();
     }
 
@@ -62,9 +61,18 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
     }
 
     @Override
+    public void deleteNote(Note delNote) {
+        NoteListFragment noteListFragment =
+                (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
+        assert noteListFragment != null;
+        noteListFragment.deleteNote(delNote);
+    }
+
+    @Override
     public void editNote(Note note) {
         showEditNote(note);
     }
+
 
     @Override
     public void saveNote(Note note) {
@@ -73,5 +81,11 @@ public class MainActivity extends AppCompatActivity implements NoteListFragment.
                 (NoteListFragment) getSupportFragmentManager().findFragmentByTag(NOTES_LIST_FRAG_TEG);
         assert noteListFragment != null;
         noteListFragment.addNote(note);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setTitle(R.string.app_name);
+        super.onBackPressed();
     }
 }

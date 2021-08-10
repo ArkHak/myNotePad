@@ -13,7 +13,27 @@ public class Note implements Parcelable {
     public final Date date;
     public final String description;
 
-    public Note(String id, String title, Date date, String description) {
+    public Note(String id, String title, Date date, String toString) {
+        this.id = id;
+        this.subject = title;
+        this.date = date;
+        this.description = toString;
+    }
+
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Note(String id, String title, String description, Date date) {
         this.id = id;
         this.subject = title;
         this.date = date;
@@ -45,6 +65,10 @@ public class Note implements Parcelable {
 
     public static String generateId() {
         return UUID.randomUUID().toString();
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override

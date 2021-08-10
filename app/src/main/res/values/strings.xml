@@ -9,4 +9,7 @@
     <string name="err_contract">Activity must implement Contract</string>
     <string name="hint_subject">Заголовок заметки</string>
     <string name="hint_description_note">Текст заметки</string>
+    <string name="clear">Очистить список</string>
+    <string name="update">Редактировать</string>
+    <string name="delete">Удалить</string>
 </resources>
