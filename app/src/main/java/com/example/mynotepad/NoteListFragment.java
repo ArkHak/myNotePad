@@ -17,10 +17,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NoteListFragment extends Fragment {
     private static final int MY_DEFAULT_DURATION = 1000;
@@ -29,6 +36,7 @@ public class NoteListFragment extends Fragment {
     private FloatingActionButton createButton;
     private RecyclerView recyclerView;
     private NotesAdapter adapter;
+    private CollectionReference noteCollection;
 
     private final ArrayList<Note> noteList = new ArrayList<>();
 
@@ -74,12 +82,38 @@ public class NoteListFragment extends Fragment {
         adapter.SetDeleteItemListener(getContract()::deleteNote);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        FirebaseApp.initializeApp(requireContext());
+        FirebaseFirestore myDB = FirebaseFirestore.getInstance();
+
+        noteCollection = myDB.collection("notes");
+
+
         renderList(noteList);
         recyclerView.setAdapter(adapter);
         createButton.setOnClickListener(v -> {
             getContract().createNewNote();
         });
     }
+
+
+    public static Map<String, Object> toDocument(Note note) {
+        Map<String, Object> answer = new HashMap<>();
+        answer.put("ID", note.id);
+        answer.put("SUBJECT", note.subject);
+        answer.put("DESCRIPTION", note.description);
+        answer.put("DATE", note.date);
+        return answer;
+    }
+
+    public void addNoteToBase(final Note note) {
+        noteCollection.add(toDocument(note)).
+                addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                    }
+                });
+    }
+
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -94,6 +128,7 @@ public class NoteListFragment extends Fragment {
         if (sameNote != null) {
             noteList.remove(sameNote);
         }
+        addNoteToBase(newNote);
         noteList.add(newNote);
         renderList(noteList);
     }
@@ -124,12 +159,14 @@ public class NoteListFragment extends Fragment {
 
     private void renderList(List<Note> notes, String action) {
         adapter.setData(notes);
-        switch (action){
+        switch (action) {
             case ACTION_DEL_NOTE:
                 adapter.notifyItemRemoved(position);
         }
 
     }
+
+//    NoteListFragment init(NotesSourceResponse notesSourceResponse);
 
     private Contract getContract() {
         return (Contract) getActivity();
