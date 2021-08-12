@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class NoteListFragment extends Fragment {
     private static final int MY_DEFAULT_DURATION = 1000;
     private static int positionToList;
+    private boolean SET_UPDATE_NOTE = false;
     private final String ACTION_DEL_NOTE = "ACTION_DEL_NOTE";
     private FloatingActionButton createButton;
     private RecyclerView recyclerView;
@@ -52,7 +54,11 @@ public class NoteListFragment extends Fragment {
         FirebaseApp.initializeApp(requireContext());
         myDB = FirebaseFirestore.getInstance();
         noteCollection = myDB.collection("notes");
-        initListBD(noteList);
+
+        if (!SET_UPDATE_NOTE){
+            initListBD(noteList);
+            SET_UPDATE_NOTE = false;
+        }
 
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(MY_DEFAULT_DURATION);
@@ -112,11 +118,13 @@ public class NoteListFragment extends Fragment {
     public void addNote(Note newNote) {
         Note sameNote = findNoteWithId(newNote.id);
         if (sameNote != null) {
-            noteList.remove(sameNote);
-            deleteFromBD(sameNote);
+            updateNoteFromBD(newNote);
+            SET_UPDATE_NOTE = true;
+            sameNote.update(newNote);
+        } else {
+            addNoteToBD(newNote);
+            noteList.add(newNote);
         }
-        addNoteToBD(newNote);
-        noteList.add(newNote);
         renderList(noteList);
     }
 
@@ -179,6 +187,27 @@ public class NoteListFragment extends Fragment {
                 addOnSuccessListener(documentReference ->
                         Log.d("BD", "Сделана новая запись в БД: " + note.getSubject()));
         adapter.notifyDataSetChanged();
+    }
+
+    private void updateNoteFromBD(Note sameNote) {
+        noteCollection
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> doc = document.getData();
+                            if (doc.get("id").equals(sameNote.id)) {
+                                String id = document.getId();
+                                noteCollection.document(id).set(NoteMapping.toDocument(sameNote));
+                            }
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.w(TAG, "Error update documents.", task.getException());
+                    }
+                });
+
     }
 
     private void deleteFromBD(Note sameNote) {
