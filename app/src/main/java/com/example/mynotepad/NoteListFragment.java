@@ -1,6 +1,7 @@
 package com.example.mynotepad;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,7 +57,7 @@ public class NoteListFragment extends Fragment {
         myDB = FirebaseFirestore.getInstance();
         noteCollection = myDB.collection("notes");
 
-        if (!SET_UPDATE_NOTE){
+        if (!SET_UPDATE_NOTE) {
             initListBD(noteList);
             SET_UPDATE_NOTE = false;
         }
@@ -79,11 +81,22 @@ public class NoteListFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.note_list_clear:
-                for (Note note : noteList) {
-                    deleteFromBD(note);
-                }
-                noteList.clear();
-                renderList(noteList);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle(R.string.warning)
+                        .setMessage(R.string.clear_list_all)
+                        .setIcon(R.drawable.ic_warning)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes_clear_list,
+                                (dialog, which) -> {
+                                    for (Note note : noteList) {
+                                        deleteFromBD(note);
+                                    }
+                                    noteList.clear();
+                                    renderList(noteList);
+                                })
+                        .setNegativeButton(R.string.no_clear_list, null);
+                AlertDialog alertClearList = builder.create();
+                alertClearList.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -129,12 +142,23 @@ public class NoteListFragment extends Fragment {
     }
 
     public void deleteNote(Note delNote) {
-        Note sameNote = findNoteWithId(delNote.id);
-        if (sameNote != null) {
-            noteList.remove(sameNote);
-        }
-        deleteFromBD(sameNote);
-        renderList(noteList, ACTION_DEL_NOTE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.warning)
+                .setMessage(R.string.delete_note)
+                .setIcon(R.drawable.ic_warning)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes_delete_note,
+                        (dialog, which) -> {
+                            Note sameNote = findNoteWithId(delNote.id);
+                            if (sameNote != null) {
+                                noteList.remove(sameNote);
+                            }
+                            deleteFromBD(sameNote);
+                            renderList(noteList, ACTION_DEL_NOTE);
+                        })
+                .setNegativeButton(R.string.no_clear_list, null);
+        AlertDialog alertClearList = builder.create();
+        alertClearList.show();
     }
 
     private Note findNoteWithId(String id) {
