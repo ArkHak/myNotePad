@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public class Note implements Parcelable {
     public final String id;
-    public final String subject;
+    public String subject;
     public final Date date;
-    public final String description;
+    public String description;
 
     public Note(String id, String title, Date date, String toString) {
         this.id = id;
@@ -82,5 +82,10 @@ public class Note implements Parcelable {
         dest.writeString(subject);
         dest.writeString(description);
         dest.writeLong(date.getTime());
+    }
+
+    public void update(Note newNote) {
+        description = newNote.description;
+        subject = newNote.subject;
     }
 }

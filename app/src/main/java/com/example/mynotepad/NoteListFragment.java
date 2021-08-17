@@ -1,6 +1,7 @@
 package com.example.mynotepad;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,34 +10,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class NoteListFragment extends Fragment {
     private static final int MY_DEFAULT_DURATION = 1000;
-    private static int position;
+    private static int positionToList;
+    private boolean SET_UPDATE_NOTE = false;
     private final String ACTION_DEL_NOTE = "ACTION_DEL_NOTE";
     private FloatingActionButton createButton;
     private RecyclerView recyclerView;
@@ -58,7 +56,11 @@ public class NoteListFragment extends Fragment {
         FirebaseApp.initializeApp(requireContext());
         myDB = FirebaseFirestore.getInstance();
         noteCollection = myDB.collection("notes");
-        initListBase(noteList);
+
+        if (!SET_UPDATE_NOTE) {
+            initListBD(noteList);
+            SET_UPDATE_NOTE = false;
+        }
 
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(MY_DEFAULT_DURATION);
@@ -79,8 +81,22 @@ public class NoteListFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.note_list_clear:
-                noteList.clear();
-                renderList(noteList);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle(R.string.warning)
+                        .setMessage(R.string.clear_list_all)
+                        .setIcon(R.drawable.ic_warning)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes_clear_list,
+                                (dialog, which) -> {
+                                    for (Note note : noteList) {
+                                        deleteFromBD(note);
+                                    }
+                                    noteList.clear();
+                                    renderList(noteList);
+                                })
+                        .setNegativeButton(R.string.no_clear_list, null);
+                AlertDialog alertClearList = builder.create();
+                alertClearList.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -115,26 +131,40 @@ public class NoteListFragment extends Fragment {
     public void addNote(Note newNote) {
         Note sameNote = findNoteWithId(newNote.id);
         if (sameNote != null) {
-            noteList.remove(sameNote);
+            updateNoteFromBD(newNote);
+            SET_UPDATE_NOTE = true;
+            sameNote.update(newNote);
+        } else {
+            addNoteToBD(newNote);
+            noteList.add(newNote);
         }
-        addNoteToBase(newNote);
-        noteList.add(newNote);
         renderList(noteList);
     }
 
     public void deleteNote(Note delNote) {
-        Note sameNote = findNoteWithId(delNote.id);
-        if (sameNote != null) {
-            noteList.remove(sameNote);
-        }
-
-        renderList(noteList, ACTION_DEL_NOTE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.warning)
+                .setMessage(R.string.delete_note)
+                .setIcon(R.drawable.ic_warning)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes_delete_note,
+                        (dialog, which) -> {
+                            Note sameNote = findNoteWithId(delNote.id);
+                            if (sameNote != null) {
+                                noteList.remove(sameNote);
+                            }
+                            deleteFromBD(sameNote);
+                            renderList(noteList, ACTION_DEL_NOTE);
+                        })
+                .setNegativeButton(R.string.no_clear_list, null);
+        AlertDialog alertClearList = builder.create();
+        alertClearList.show();
     }
 
     private Note findNoteWithId(String id) {
-        position = -1;
+        positionToList = -1;
         for (Note note : noteList) {
-            position++;
+            positionToList++;
             if (note.id.equals(id)) {
                 return note;
             }
@@ -151,22 +181,21 @@ public class NoteListFragment extends Fragment {
         adapter.setData(notes);
         switch (action) {
             case ACTION_DEL_NOTE:
-                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRemoved(positionToList);
         }
 
     }
 
-    public void initListBase(ArrayList<Note> noteList) {
+    public void initListBD(ArrayList<Note> noteList) {
         noteList.clear();
-        myDB.collection("notes").orderBy(NoteMapping.Fields.DATE,
+        noteCollection.orderBy(NoteMapping.Fields.DATE,
                 Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Object> doc = document.getData();
-                            String id = document.getId();
-                            Note note = NoteMapping.toNote(id, doc);
+                            Note note = NoteMapping.toNote(doc);
                             noteList.add(note);
                             Log.d(TAG, document.getId() + " => " + document.getData());
                             adapter.notifyDataSetChanged();
@@ -177,10 +206,52 @@ public class NoteListFragment extends Fragment {
                 });
     }
 
-    public void addNoteToBase(final Note note) {
+    public void addNoteToBD(final Note note) {
         noteCollection.add(NoteMapping.toDocument(note)).
                 addOnSuccessListener(documentReference ->
                         Log.d("BD", "Сделана новая запись в БД: " + note.getSubject()));
+        adapter.notifyDataSetChanged();
+    }
+
+    private void updateNoteFromBD(Note sameNote) {
+        noteCollection
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> doc = document.getData();
+                            if (doc.get("id").equals(sameNote.id)) {
+                                String id = document.getId();
+                                noteCollection.document(id).set(NoteMapping.toDocument(sameNote));
+                            }
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.w(TAG, "Error update documents.", task.getException());
+                    }
+                });
+
+    }
+
+    private void deleteFromBD(Note sameNote) {
+        noteCollection
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> doc = document.getData();
+                            if (doc.get("id").equals(sameNote.id)) {
+                                String id = document.getId();
+                                noteCollection.document(id).delete();
+                            }
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Log.w(TAG, "Error remove documents.", task.getException());
+                    }
+                });
     }
 
     private Contract getContract() {
@@ -188,6 +259,7 @@ public class NoteListFragment extends Fragment {
     }
 
     interface Contract {
+
 
         void createNewNote();
 

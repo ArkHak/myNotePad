@@ -14,7 +14,7 @@ public class NoteMapping {
         public final static String DESCRIPTION = "description";
     }
 
-    public static Note toNote(String id, Map<String, Object> doc) {
+    public static Note toNote(Map<String, Object> doc) {
         Timestamp timeStamp = (Timestamp) doc.get(Fields.DATE);
 
         Note answer = new Note(

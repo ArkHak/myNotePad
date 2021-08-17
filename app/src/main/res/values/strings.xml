@@ -12,4 +12,10 @@
     <string name="clear">Очистить список</string>
     <string name="update">Редактировать</string>
     <string name="delete">Удалить</string>
+    <string name="warning">ВНИМАНИЕ! НЕОБРАТИМЫЕ ПОСЛЕДСТВИЯ!</string>
+    <string name="clear_list_all">Вы уверены, что хотите полностью очистить список Ваших заметок?</string>
+    <string name="yes_clear_list">Очистить</string>
+    <string name="no_clear_list">Не, Я передумал</string>
+    <string name="delete_note">Вы действительно хотите удалить данную заметку?</string>
+    <string name="yes_delete_note">Удалить</string>
 </resources>
